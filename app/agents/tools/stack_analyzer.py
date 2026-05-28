@@ -3,15 +3,12 @@ def analyze_stack(log_text: str):
 
     capture = False
 
-    for line in log_text.split("\n"):
+    for line in log_text.splitlines():
         if "Traceback" in line:
             capture = True
 
         if capture:
-            stack_lines.append(line)
-
-        if line.strip() == "":
-            capture = False
+            stack_lines.append(line.strip())
 
     return {
         "stack_trace": stack_lines

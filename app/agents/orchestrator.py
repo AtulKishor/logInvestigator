@@ -12,7 +12,12 @@ async def analyze_logs(log_text):
     # ---------- extraction ----------
     errors = extract_errors(log_text)
     stack = analyze_stack(log_text)
-    detected_signals = (errors + stack["stack_trace"])
+    detected_signals = list(
+        dict.fromkeys(
+            errors +
+            stack["stack_trace"]
+        )
+    )
 
     # ---------- tools ----------
 
