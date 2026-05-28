@@ -6,9 +6,10 @@ class AnalyzeRequest(BaseModel):
 class IncidentReport(BaseModel):
     root_cause: str
     severity: str
+    severity_reason: str
     impacted_component: str
     error_summary: str
     debugging_steps: list[str]
     suggested_fix: str
     confidence_score: float
-    detected_signals: list[str] = []
+    detected_signals: list[str] = Field(default_factory=list)

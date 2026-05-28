@@ -2,28 +2,44 @@
 
 ## input:
 ```
-2026-05-24 INFO Starting service
-2026-05-24 ERROR Database connection failed
-Traceback:
-ConnectionRefusedError: DB not reachable
+{
+  "logs": "ERROR Database connection failed\nConnectionRefusedError"
+}
 ```
 
 ## LLM response output:
+Response: 200 ok
 ```
 {
-  "root_cause": "The application is unable to establish a network connection to the database. The 'ConnectionRefusedError' indicates that the target host either actively rejected the connection (e.g., because the database service is not running on the target port) or is unreachable due to network configuration issues (firewall, security groups, or routing).",
+  "root_cause": "The PostgreSQL database service is either offline, crashed, or unreachable due to network access controls (firewalls/security groups) blocking the configured port (typically 5432).",
   "severity": "CRITICAL",
-  "impacted_component": "Database Connectivity / Application Startup Sequence",
-  "error_summary": "The service failed to start because it could not connect to the database, throwing a 'ConnectionRefusedError: DB not reachable' immediately during the initialization phase.",
+  "severity_reason": "Critical failure pattern matched.",
+  "impacted_component": "postgres",
+  "error_summary": "Application failed to initiate a TCP handshake with the PostgreSQL database, resulting in a ConnectionRefusedError and critical service interruption.",
   "debugging_steps": [
-    "Verify the operational status of the database instance (check CPU, memory, and service logs on the DB host).",
-    "Validate the application's environment configuration (specifically DB_HOST, DB_PORT, and protocol) to ensure it points to the correct endpoint.",
-    "Perform a network connectivity check from the application container/host to the database port using tools like `nc -zv <db-host> <db-port>` or `telnet`.",
-    "Check cloud/network security groups, NACLs, and firewalls to ensure traffic is allowed from the application subnet to the database subnet on the designated port.",
-    "Check if the database has reached its maximum connection limit, which might cause it to refuse new connection requests."
+    "Check the operational status of the PostgreSQL database instance/container (e.g., systemctl status postgresql or kubectl get pods).",
+    "Validate network connectivity from the application container to the database host using 'nc -zvw3 <db-host> 5432'.",
+    "Inspect database host system logs (/var/log/messages or dmesg) for Out-Of-Memory (OOM) killer events that might have terminated Postgres.",
+    "Review pg_hba.conf and postgresql.conf to ensure the database is configured to listen on the correct network interfaces."
   ],
-  "suggested_fix": "Ensure the database service is running and listening on the expected port. If running, update network routing, firewall rules, or Kubernetes NetworkPolicies to allow ingress traffic from the application. If configuration is incorrect, update the service's database connection environment variables with the correct parameters and trigger a redeployment.",
+  "suggested_fix": "Start or restart the PostgreSQL service if it is down. If the service is running, update network firewalls, security groups, or Kubernetes NetworkPolicies to permit traffic from the application subnet to the database on port 5432.",
   "confidence_score": 0.95,
-  "raw_signals": []
+  "detected_signals": [
+    "ERROR Database connection failed"
+  ]
 }
+```
+
+## Architecture
+```
+FastAPI
+   ↓
+Orchestrator
+   ├── Error Extractor Tool
+   ├── Stack Analyzer Tool
+   ├── Severity Tool
+   ├── Component Detector Tool
+   └── Root Cause Agent
+   ↓
+Structured IncidentReport
 ```
