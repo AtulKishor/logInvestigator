@@ -43,3 +43,18 @@ Orchestrator
    ↓
 Structured IncidentReport
 ```
+
+## Steps
+ - clone repo and cd into root directory `logInvestigator`
+ - install uv and run
+ ```
+ uv run app.main:api --reload
+ ```
+ - goto http://localhost:8000/docs
+
+## API
+ Analyze logs
+ - /api/analyze
+ ```
+{"logs": "..."}
+```
