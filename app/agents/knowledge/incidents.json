@@ -1,0 +1,31 @@
+{
+  "ConnectionRefusedError": {
+    "root_cause": "Target service unreachable.",
+    "debugging_steps": [
+      "Verify service status",
+      "Check host/port",
+      "Validate network access"
+    ],
+    "suggested_fix": "Restart service or correct connectivity."
+  },
+
+  "Timeout": {
+    "root_cause": "Operation exceeded execution threshold.",
+    "debugging_steps": [
+      "Inspect latency",
+      "Check overloaded services",
+      "Review retry configuration"
+    ],
+    "suggested_fix": "Optimize slow dependency or increase timeout."
+  },
+
+  "Authentication failed": {
+    "root_cause": "Credential or token validation issue.",
+    "debugging_steps": [
+      "Validate credentials",
+      "Inspect auth provider",
+      "Check token expiration"
+    ],
+    "suggested_fix": "Correct authentication configuration."
+  }
+}

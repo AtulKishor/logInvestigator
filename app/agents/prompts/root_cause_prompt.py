@@ -2,11 +2,12 @@ def build_root_cause_prompt(
     logs,
     detected_signals,
     severity_result,
-    component_result
+    component_result,
+    knowledge_context
 ):
 
     return f"""
-You are a senior Site Reliability Engineer.
+You are a senior SRE.
 
 Analyze this production incident.
 
@@ -16,13 +17,16 @@ LOGS:
 DETECTED SIGNALS:
 {detected_signals}
 
-SEVERITY ANALYSIS:
+SEVERITY:
 {severity_result}
 
-COMPONENT ANALYSIS:
+COMPONENT:
 {component_result}
 
-Produce incident analysis.
+KNOWN INCIDENT KNOWLEDGE:
+{knowledge_context}
+
+Use retrieved knowledge when relevant.
 
 Return STRICT JSON ONLY.
 
@@ -31,10 +35,7 @@ Schema:
 {{
     "root_cause":"...",
     "error_summary":"...",
-    "debugging_steps":[
-        "...",
-        "..."
-    ],
+    "debugging_steps":["..."],
     "suggested_fix":"...",
     "confidence_score":0.0
 }}

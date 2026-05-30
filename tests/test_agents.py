@@ -2,6 +2,7 @@ import pytest
 
 from app.agents.tools.component_detector import detect_component
 from app.agents.tools.error_extractor import extract_errors
+from app.agents.tools.knowledge_retriever import retrieve_knowledge
 
 
 def test_extract_errors():
@@ -21,3 +22,13 @@ async def test_postgres_detection():
     assert \
         result["impacted_component"] \
         == "postgres"
+
+@pytest.mark.asyncio
+async def test_connection_refused():
+    result = await retrieve_knowledge(
+        [
+            "ConnectionRefusedError: DB unreachable"
+        ]
+    )
+    assert len(result) == 1
+    assert result[0]["signal"] == "ConnectionRefusedError"

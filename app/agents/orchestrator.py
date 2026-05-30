@@ -4,6 +4,7 @@ from app.agents.tools.severity_tool import classify_severity
 from app.agents.tools.component_detector import detect_component
 from app.core.schemas import IncidentReport
 from app.agents.tools.root_cause_agent import analyze_root_cause
+from app.agents.tools.knowledge_retriever import retrieve_knowledge
 
 from app.core.logger import logger
 
@@ -23,6 +24,7 @@ async def analyze_logs(log_text):
 
     severity_result = await classify_severity(log_text, detected_signals)
     component_result = await detect_component(log_text, detected_signals)
+    knowledge = await retrieve_knowledge(detected_signals)
 
     # ---------- RCA AGENT ----------
 
@@ -30,7 +32,8 @@ async def analyze_logs(log_text):
             logs=log_text,
             detected_signals=detected_signals,
             severity_result=severity_result,
-            component_result=component_result
+            component_result=component_result,
+            knowledge_context=knowledge
         )
 
     # ---------- final output ----------
